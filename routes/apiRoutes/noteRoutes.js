@@ -1,7 +1,12 @@
 const router = require('express').Router();
-const fs = require('fs');
+const {
+    getMaxID,
+    createNewNote,
+    saveNotes
+} = require('../../lib/notes');
 
-const notes = require('../../db/db.json');
+let notes = require('../../db/db.json');
+let maxID = getMaxID(notes);
 
 router.get('/notes', (req, res) => {
     let results = notes;
@@ -9,13 +14,15 @@ router.get('/notes', (req, res) => {
 });
 
 router.post('/notes', (req, res) => {
-    const note = req.body;
-    console.log(note);
+    req.body.id = ++maxID;
+    const note = createNewNote(req.body, notes);
+    res.json(note);
 });
 
 router.delete('/notes/:id', (req, res) => {
-    let results = notes[req.params.id];
-    console.log(results);
+    notes = notes.filter(note => note.id != req.params.id);
+    saveNotes(notes);
+    res.sendStatus(200);
 });
 
 module.exports = router;
