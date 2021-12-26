@@ -10,13 +10,13 @@ let maxID = getMaxID(notes);
 
 router.get('/notes', (req, res) => {
     let results = notes;
-    res.json(results);
+    res.status(200).json(results);
 });
 
 router.post('/notes', (req, res) => {
     req.body.id = ++maxID;
     const note = createNewNote(req.body, notes);
-    res.json(note);
+    res.status(200).json(note);
 });
 
 router.delete('/notes/:id', (req, res) => {
